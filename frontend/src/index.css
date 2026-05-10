@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    color-scheme: light;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.medical-grid {
+    background-image: repeating-linear-gradient(0deg,
+            rgba(37, 99, 235, 0.08),
+            rgba(37, 99, 235, 0.08) 1px,
+            transparent 1px,
+            transparent 24px),
+        repeating-linear-gradient(90deg,
+            rgba(37, 99, 235, 0.08),
+            rgba(37, 99, 235, 0.08) 1px,
+            transparent 1px,
+            transparent 24px);
+}
+
+.indeterminate-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.indeterminate-bar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    background: #2563eb;
+    transform: translateX(-120%);
+    animation: indeterminate 1.8s ease-in-out infinite;
+}
+
+@keyframes indeterminate {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    50% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(220%);
+    }
+}
