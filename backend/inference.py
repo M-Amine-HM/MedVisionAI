@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import base64
 import io
 import json
 from pathlib import Path
 from typing import Dict
 
+import numpy as np
 import torch
 import torch.nn as nn
 from PIL import Image
@@ -102,10 +104,62 @@ def _load_models():
 
     ensemble_weights = _load_ensemble_weights()
     ensemble = EnsembleModel(resnet, vit, weights=ensemble_weights).to(DEVICE)
-    return ensemble
+    return resnet, vit, ensemble
 
 
-ensemble_model = _load_models()
+resnet_model, vit_model, ensemble_model = _load_models()
+
+
+def _generate_gradcam(pil_image: Image.Image) -> str:
+    resnet_model.zero_grad(set_to_none=True)
+    activations = []
+    gradients = []
+
+    target_layer = resnet_model.backbone.layer4
+
+    def _forward_hook(_, __, output):
+        activations.append(output)
+
+    def _backward_hook(_, __, grad_output):
+        gradients.append(grad_output[0])
+
+    handle_forward = target_layer.register_forward_hook(_forward_hook)
+    handle_backward = target_layer.register_full_backward_hook(_backward_hook)
+
+    input_resnet = transform_resnet(pil_image).unsqueeze(0).to(DEVICE)
+    scores = resnet_model(input_resnet)
+    class_idx = int(torch.argmax(scores, dim=1).item())
+    scores[0, class_idx].backward()
+
+    handle_forward.remove()
+    handle_backward.remove()
+
+    if not activations or not gradients:
+        raise RuntimeError("Grad-CAM failed to capture activations.")
+
+    grads = gradients[0]
+    acts = activations[0]
+    weights = torch.mean(grads, dim=(2, 3), keepdim=True)
+    cam = torch.relu(torch.sum(weights * acts, dim=1)).squeeze(0)
+    cam -= cam.min()
+    cam /= (cam.max() + 1e-8)
+
+    cam_np = cam.detach().cpu().numpy()
+    cam_img = Image.fromarray(np.uint8(cam_np * 255))
+    cam_img = cam_img.resize(pil_image.size, resample=Image.BILINEAR)
+
+    base = np.array(pil_image).astype(np.float32)
+    heat = np.array(cam_img).astype(np.float32) / 255.0
+    alpha = 0.45
+    heatmap_color = np.array([255.0, 0.0, 0.0], dtype=np.float32)
+    overlay = base * (1 - alpha * heat[..., None]) + \
+        heatmap_color * (alpha * heat[..., None])
+    overlay_img = Image.fromarray(np.uint8(np.clip(overlay, 0, 255)))
+
+    buffer = io.BytesIO()
+    overlay_img.save(buffer, format="PNG")
+    encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    return f"data:image/png;base64,{encoded}"
 
 
 def predict_xray(image) -> dict:
@@ -131,8 +185,11 @@ def predict_xray(image) -> dict:
     top_class = max(predictions, key=predictions.get)
     confidence = predictions[top_class]
 
+    heatmap = _generate_gradcam(pil_image)
+
     return {
         "class": top_class,
         "confidence": confidence,
         "probabilities": predictions,
+        "heatmap": heatmap,
     }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const hexToRgba = (hex, alpha) => {
@@ -9,12 +10,21 @@ const hexToRgba = (hex, alpha) => {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-const ResultCard = ({ result, classInfo, previewUrl, fileName, timestamp, onReset }) => {
+const ResultCard = ({
+    result,
+    classInfo,
+    previewUrl,
+    heatmapUrl,
+    fileName,
+    timestamp,
+    onReset,
+}) => {
     const meta = classInfo[result.predicted_class] || {
         color: "#2563EB",
         icon: "ℹ️",
         message: "Prediction completed. Consult a medical professional for diagnosis.",
     };
+    const [showHeatmap, setShowHeatmap] = useState(true);
     const confidencePct = `${(result.confidence * 100).toFixed(1)}%`;
     const classOrder = ["Normal", "Pneumonia", "COVID-19", "Tuberculosis"];
     const markerIndex = Math.max(
@@ -106,6 +116,50 @@ const ResultCard = ({ result, classInfo, previewUrl, fileName, timestamp, onRese
                     </div>
                 </div>
             </div>
+
+            {heatmapUrl && (
+                <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <div className="text-sm font-semibold text-medical-text">
+                                Suspicious Areas Visualization
+                            </div>
+                            <div className="text-xs text-medical-muted">
+                                Grad-CAM overlay from the ResNet model
+                            </div>
+                        </div>
+                        <div className="flex rounded-full border border-medical-border bg-white p-1 text-xs">
+                            <button
+                                type="button"
+                                onClick={() => setShowHeatmap(false)}
+                                className={`rounded-full px-3 py-1 ${!showHeatmap
+                                        ? "bg-medical-primary text-white"
+                                        : "text-medical-muted"
+                                    }`}
+                            >
+                                Original
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowHeatmap(true)}
+                                className={`rounded-full px-3 py-1 ${showHeatmap
+                                        ? "bg-medical-primary text-white"
+                                        : "text-medical-muted"
+                                    }`}
+                            >
+                                Heatmap
+                            </button>
+                        </div>
+                    </div>
+                    <div className="mt-4 overflow-hidden rounded-xl border border-medical-border bg-white">
+                        <img
+                            src={showHeatmap ? heatmapUrl : previewUrl}
+                            alt="Suspicious areas visualization"
+                            className="h-72 w-full object-contain sm:h-96"
+                        />
+                    </div>
+                </div>
+            )}
 
             <button
                 type="button"
