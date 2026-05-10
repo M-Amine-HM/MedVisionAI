@@ -118,7 +118,7 @@ const ResultCard = ({
                 </div>
             </div>
 
-            {(heatmapRegions?.points?.length > 0 || heatmapOverlay) && (
+            {heatmapOverlay && (
                 <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
@@ -126,7 +126,7 @@ const ResultCard = ({
                                 Suspicious Areas Visualization
                             </div>
                             <div className="text-xs text-medical-muted">
-                                Grad-CAM hotspots from the ResNet model
+                                Grad-CAM heatmap from the ResNet model
                             </div>
                         </div>
                         <div className="flex rounded-full border border-medical-border bg-white p-1 text-xs">
@@ -159,34 +159,11 @@ const ResultCard = ({
                             className="h-72 w-full object-contain sm:h-96"
                         />
                         {showHeatmap && (
-                            <>
-                                {heatmapOverlay && (
-                                    <img
-                                        src={heatmapOverlay}
-                                        alt="Heatmap overlay"
-                                        className="absolute inset-0 h-full w-full object-contain"
-                                    />
-                                )}
-                                {heatmapRegions?.points?.length > 0 && (
-                                    <svg
-                                        className="absolute inset-0 h-full w-full"
-                                        viewBox={`0 0 ${heatmapRegions.image_size.width} ${heatmapRegions.image_size.height}`}
-                                        preserveAspectRatio="xMidYMid meet"
-                                    >
-                                        {heatmapRegions.points.map((point, index) => (
-                                            <circle
-                                                key={`${point.x}-${point.y}-${index}`}
-                                                cx={point.x * heatmapRegions.image_size.width}
-                                                cy={point.y * heatmapRegions.image_size.height}
-                                                r={point.r}
-                                                fill="rgba(220, 38, 38, 0.12)"
-                                                stroke="#DC2626"
-                                                strokeWidth="2"
-                                            />
-                                        ))}
-                                    </svg>
-                                )}
-                            </>
+                            <img
+                                src={heatmapOverlay}
+                                alt="Heatmap overlay"
+                                className="absolute inset-0 h-full w-full object-contain"
+                            />
                         )}
                     </div>
                 </div>
