@@ -2,7 +2,7 @@
 
 > ⚠️ For research and educational purposes only. This tool is not a substitute for professional medical diagnosis.
 
-![Screenshot Placeholder](docs/screenshot-placeholder.svg)
+<!-- ![Screenshot Placeholder](docs/screenshot-placeholder.svg) -->
 
 ## Overview
 ChestAI is a clinical-grade web application that wraps a deep learning ensemble model to classify chest X-ray images into four respiratory conditions. Users upload a JPG/PNG image, the FastAPI backend runs inference, and the React frontend presents a clear, trustworthy medical UI with confidence breakdowns.
