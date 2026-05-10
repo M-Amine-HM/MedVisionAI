@@ -115,6 +115,7 @@ async def predict(file: UploadFile = File(...)) -> dict:
     probabilities = None
 
     heatmap_regions = None
+    heatmap_overlay = None
 
     if isinstance(prediction, dict):
         class_name = prediction.get(
@@ -122,6 +123,7 @@ async def predict(file: UploadFile = File(...)) -> dict:
         confidence = prediction.get("confidence")
         probabilities = prediction.get("probabilities", {})
         heatmap_regions = prediction.get("heatmap_regions")
+        heatmap_overlay = prediction.get("heatmap_overlay")
     elif isinstance(prediction, (list, tuple)) and len(prediction) >= 3:
         class_name, confidence, probabilities = prediction[0], prediction[1], prediction[2]
     else:
@@ -161,6 +163,7 @@ async def predict(file: UploadFile = File(...)) -> dict:
         "color": meta["color"],
         "message": meta["message"],
         "heatmap_regions": heatmap_regions,
+        "heatmap_overlay": heatmap_overlay,
     }
 
 

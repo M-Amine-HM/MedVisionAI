@@ -213,6 +213,7 @@ const App = () => {
                                 classInfo={classMap}
                                 previewUrl={previewUrl}
                                 heatmapRegions={result.heatmap_regions}
+                                heatmapOverlay={result.heatmap_overlay}
                                 fileName={selectedFile?.name}
                                 timestamp={analysisTimestamp}
                                 onReset={handleClear}

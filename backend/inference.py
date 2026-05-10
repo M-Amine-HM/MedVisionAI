@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import io
 import json
 from pathlib import Path
@@ -145,8 +146,12 @@ def _generate_gradcam_map(pil_image: Image.Image) -> np.ndarray:
     cam /= (cam.max() + 1e-8)
 
     cam = cam.unsqueeze(0).unsqueeze(0)
-    cam = F.interpolate(cam, size=(224, 224),
-                        mode="bilinear", align_corners=False)
+    cam = F.interpolate(
+        cam,
+        size=(pil_image.height, pil_image.width),
+        mode="bilinear",
+        align_corners=False,
+    )
     cam_np = cam.squeeze(0).squeeze(0).detach().cpu().numpy()
     cam_np -= cam_np.min()
     cam_np /= (cam_np.max() + 1e-8)
@@ -156,11 +161,11 @@ def _generate_gradcam_map(pil_image: Image.Image) -> np.ndarray:
 def _extract_points(
     cam_map: np.ndarray,
     image_size,
-    max_points: int = 8,
-    min_distance: int = 16,
+    max_points: int = 12,
+    min_distance: int = 10,
 ) -> dict:
     height, width = cam_map.shape
-    threshold = float(max(np.percentile(cam_map, 90), 0.5))
+    threshold = float(max(np.percentile(cam_map, 92), 0.55))
     working = cam_map.copy()
     points = []
 
@@ -170,8 +175,8 @@ def _extract_points(
         if score < threshold:
             break
 
-        radius = int(6 + (1 - score) * 10)
-        radius = max(6, min(16, radius))
+        radius = int(4 + (1 - score) * 8)
+        radius = max(4, min(12, radius))
 
         points.append({
             "x": round(col / width, 4),
@@ -193,6 +198,22 @@ def _extract_points(
         "points": points,
         "image_size": {"width": img_width, "height": img_height},
     }
+
+
+def _generate_heatmap_overlay(cam_map: np.ndarray) -> str:
+    alpha = np.clip(np.power(cam_map, 1.6) * 180, 0, 180).astype(np.uint8)
+    height, width = cam_map.shape
+    overlay = np.zeros((height, width, 4), dtype=np.uint8)
+    overlay[..., 0] = 220
+    overlay[..., 1] = 38
+    overlay[..., 2] = 38
+    overlay[..., 3] = alpha
+
+    overlay_img = Image.fromarray(overlay, mode="RGBA")
+    buffer = io.BytesIO()
+    overlay_img.save(buffer, format="PNG")
+    encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    return f"data:image/png;base64,{encoded}"
 
 
 def predict_xray(image) -> dict:
@@ -220,10 +241,12 @@ def predict_xray(image) -> dict:
 
     cam_map = _generate_gradcam_map(pil_image)
     heatmap_regions = _extract_points(cam_map, pil_image.size)
+    heatmap_overlay = _generate_heatmap_overlay(cam_map)
 
     return {
         "class": top_class,
         "confidence": confidence,
         "probabilities": predictions,
         "heatmap_regions": heatmap_regions,
+        "heatmap_overlay": heatmap_overlay,
     }

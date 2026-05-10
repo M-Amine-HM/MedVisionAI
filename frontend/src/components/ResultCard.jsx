@@ -15,6 +15,7 @@ const ResultCard = ({
     classInfo,
     previewUrl,
     heatmapRegions,
+    heatmapOverlay,
     fileName,
     timestamp,
     onReset,
@@ -117,7 +118,7 @@ const ResultCard = ({
                 </div>
             </div>
 
-            {heatmapRegions?.points?.length > 0 && (
+            {(heatmapRegions?.points?.length > 0 || heatmapOverlay) && (
                 <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
@@ -158,23 +159,34 @@ const ResultCard = ({
                             className="h-72 w-full object-contain sm:h-96"
                         />
                         {showHeatmap && (
-                            <svg
-                                className="absolute inset-0 h-full w-full"
-                                viewBox={`0 0 ${heatmapRegions.image_size.width} ${heatmapRegions.image_size.height}`}
-                                preserveAspectRatio="xMidYMid meet"
-                            >
-                                {heatmapRegions.points.map((point, index) => (
-                                    <circle
-                                        key={`${point.x}-${point.y}-${index}`}
-                                        cx={point.x * heatmapRegions.image_size.width}
-                                        cy={point.y * heatmapRegions.image_size.height}
-                                        r={point.r}
-                                        fill="rgba(220, 38, 38, 0.12)"
-                                        stroke="#DC2626"
-                                        strokeWidth="2"
+                            <>
+                                {heatmapOverlay && (
+                                    <img
+                                        src={heatmapOverlay}
+                                        alt="Heatmap overlay"
+                                        className="absolute inset-0 h-full w-full object-contain"
                                     />
-                                ))}
-                            </svg>
+                                )}
+                                {heatmapRegions?.points?.length > 0 && (
+                                    <svg
+                                        className="absolute inset-0 h-full w-full"
+                                        viewBox={`0 0 ${heatmapRegions.image_size.width} ${heatmapRegions.image_size.height}`}
+                                        preserveAspectRatio="xMidYMid meet"
+                                    >
+                                        {heatmapRegions.points.map((point, index) => (
+                                            <circle
+                                                key={`${point.x}-${point.y}-${index}`}
+                                                cx={point.x * heatmapRegions.image_size.width}
+                                                cy={point.y * heatmapRegions.image_size.height}
+                                                r={point.r}
+                                                fill="rgba(220, 38, 38, 0.12)"
+                                                stroke="#DC2626"
+                                                strokeWidth="2"
+                                            />
+                                        ))}
+                                    </svg>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
