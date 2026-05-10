@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import base64
 import io
 import json
 from pathlib import Path
@@ -9,6 +8,7 @@ from typing import Dict
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from PIL import Image
 from torchvision import models, transforms
 import timm
@@ -110,7 +110,7 @@ def _load_models():
 resnet_model, vit_model, ensemble_model = _load_models()
 
 
-def _generate_gradcam(pil_image: Image.Image) -> str:
+def _generate_gradcam_map(pil_image: Image.Image) -> np.ndarray:
     resnet_model.zero_grad(set_to_none=True)
     activations = []
     gradients = []
@@ -144,22 +144,55 @@ def _generate_gradcam(pil_image: Image.Image) -> str:
     cam -= cam.min()
     cam /= (cam.max() + 1e-8)
 
-    cam_np = cam.detach().cpu().numpy()
-    cam_img = Image.fromarray(np.uint8(cam_np * 255))
-    cam_img = cam_img.resize(pil_image.size, resample=Image.BILINEAR)
+    cam = cam.unsqueeze(0).unsqueeze(0)
+    cam = F.interpolate(cam, size=(224, 224),
+                        mode="bilinear", align_corners=False)
+    cam_np = cam.squeeze(0).squeeze(0).detach().cpu().numpy()
+    cam_np -= cam_np.min()
+    cam_np /= (cam_np.max() + 1e-8)
+    return cam_np
 
-    base = np.array(pil_image).astype(np.float32)
-    heat = np.array(cam_img).astype(np.float32) / 255.0
-    alpha = 0.45
-    heatmap_color = np.array([255.0, 0.0, 0.0], dtype=np.float32)
-    overlay = base * (1 - alpha * heat[..., None]) + \
-        heatmap_color * (alpha * heat[..., None])
-    overlay_img = Image.fromarray(np.uint8(np.clip(overlay, 0, 255)))
 
-    buffer = io.BytesIO()
-    overlay_img.save(buffer, format="PNG")
-    encoded = base64.b64encode(buffer.getvalue()).decode("utf-8")
-    return f"data:image/png;base64,{encoded}"
+def _extract_points(
+    cam_map: np.ndarray,
+    image_size,
+    max_points: int = 8,
+    min_distance: int = 16,
+) -> dict:
+    height, width = cam_map.shape
+    threshold = float(max(np.percentile(cam_map, 90), 0.5))
+    working = cam_map.copy()
+    points = []
+
+    for _ in range(max_points):
+        row, col = np.unravel_index(np.argmax(working), working.shape)
+        score = float(working[row, col])
+        if score < threshold:
+            break
+
+        radius = int(6 + (1 - score) * 10)
+        radius = max(6, min(16, radius))
+
+        points.append({
+            "x": round(col / width, 4),
+            "y": round(row / height, 4),
+            "r": radius,
+            "score": round(score, 4),
+        })
+
+        r0 = max(row - min_distance, 0)
+        r1 = min(row + min_distance + 1, height)
+        c0 = max(col - min_distance, 0)
+        c1 = min(col + min_distance + 1, width)
+        working[r0:r1, c0:c1] = 0.0
+
+    img_width, img_height = image_size
+    return {
+        "type": "circles",
+        "threshold": round(threshold, 4),
+        "points": points,
+        "image_size": {"width": img_width, "height": img_height},
+    }
 
 
 def predict_xray(image) -> dict:
@@ -185,11 +218,12 @@ def predict_xray(image) -> dict:
     top_class = max(predictions, key=predictions.get)
     confidence = predictions[top_class]
 
-    heatmap = _generate_gradcam(pil_image)
+    cam_map = _generate_gradcam_map(pil_image)
+    heatmap_regions = _extract_points(cam_map, pil_image.size)
 
     return {
         "class": top_class,
         "confidence": confidence,
         "probabilities": predictions,
-        "heatmap": heatmap,
+        "heatmap_regions": heatmap_regions,
     }

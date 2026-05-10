@@ -14,7 +14,7 @@ const ResultCard = ({
     result,
     classInfo,
     previewUrl,
-    heatmapUrl,
+    heatmapRegions,
     fileName,
     timestamp,
     onReset,
@@ -117,7 +117,7 @@ const ResultCard = ({
                 </div>
             </div>
 
-            {heatmapUrl && (
+            {heatmapRegions?.points?.length > 0 && (
                 <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
@@ -125,7 +125,7 @@ const ResultCard = ({
                                 Suspicious Areas Visualization
                             </div>
                             <div className="text-xs text-medical-muted">
-                                Grad-CAM overlay from the ResNet model
+                                Grad-CAM hotspots from the ResNet model
                             </div>
                         </div>
                         <div className="flex rounded-full border border-medical-border bg-white p-1 text-xs">
@@ -133,8 +133,8 @@ const ResultCard = ({
                                 type="button"
                                 onClick={() => setShowHeatmap(false)}
                                 className={`rounded-full px-3 py-1 ${!showHeatmap
-                                        ? "bg-medical-primary text-white"
-                                        : "text-medical-muted"
+                                    ? "bg-medical-primary text-white"
+                                    : "text-medical-muted"
                                     }`}
                             >
                                 Original
@@ -143,20 +143,39 @@ const ResultCard = ({
                                 type="button"
                                 onClick={() => setShowHeatmap(true)}
                                 className={`rounded-full px-3 py-1 ${showHeatmap
-                                        ? "bg-medical-primary text-white"
-                                        : "text-medical-muted"
+                                    ? "bg-medical-primary text-white"
+                                    : "text-medical-muted"
                                     }`}
                             >
                                 Heatmap
                             </button>
                         </div>
                     </div>
-                    <div className="mt-4 overflow-hidden rounded-xl border border-medical-border bg-white">
+                    <div className="relative mt-4 overflow-hidden rounded-xl border border-medical-border bg-white">
                         <img
-                            src={showHeatmap ? heatmapUrl : previewUrl}
+                            src={previewUrl}
                             alt="Suspicious areas visualization"
                             className="h-72 w-full object-contain sm:h-96"
                         />
+                        {showHeatmap && (
+                            <svg
+                                className="absolute inset-0 h-full w-full"
+                                viewBox={`0 0 ${heatmapRegions.image_size.width} ${heatmapRegions.image_size.height}`}
+                                preserveAspectRatio="xMidYMid meet"
+                            >
+                                {heatmapRegions.points.map((point, index) => (
+                                    <circle
+                                        key={`${point.x}-${point.y}-${index}`}
+                                        cx={point.x * heatmapRegions.image_size.width}
+                                        cy={point.y * heatmapRegions.image_size.height}
+                                        r={point.r}
+                                        fill="rgba(220, 38, 38, 0.12)"
+                                        stroke="#DC2626"
+                                        strokeWidth="2"
+                                    />
+                                ))}
+                            </svg>
+                        )}
                     </div>
                 </div>
             )}

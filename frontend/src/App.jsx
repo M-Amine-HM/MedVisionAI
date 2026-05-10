@@ -212,7 +212,7 @@ const App = () => {
                                 result={result}
                                 classInfo={classMap}
                                 previewUrl={previewUrl}
-                                heatmapUrl={result.heatmap}
+                                heatmapRegions={result.heatmap_regions}
                                 fileName={selectedFile?.name}
                                 timestamp={analysisTimestamp}
                                 onReset={handleClear}
