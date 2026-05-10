@@ -6,6 +6,7 @@ import ClassesInfo from "./components/ClassesInfo.jsx";
 import UploadSection from "./components/UploadSection.jsx";
 import ResultCard from "./components/ResultCard.jsx";
 import ConfidenceBars from "./components/ConfidenceBars.jsx";
+import ReportSection from "./components/ReportSection.jsx";
 import LoadingOverlay from "./components/LoadingOverlay.jsx";
 
 const CLASS_INFO = [
@@ -222,6 +223,13 @@ const App = () => {
                                 probabilities={result.probabilities}
                                 predictedClass={result.predicted_class}
                                 classes={classMap}
+                            />
+                            <ReportSection
+                                result={result}
+                                previewUrl={previewUrl}
+                                heatmapOverlay={result.heatmap_overlay}
+                                classInfo={classMap}
+                                timestamp={analysisTimestamp}
                             />
                         </div>
                     </section>
