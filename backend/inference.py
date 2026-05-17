@@ -228,8 +228,9 @@ def predict_xray(image) -> dict:
     input_vit = transform_vit(pil_image).unsqueeze(0).to(DEVICE)
 
     with torch.no_grad():
-        outputs = ensemble_model(input_resnet, input_vit)
-        probabilities = torch.softmax(outputs, dim=1)[0].cpu().numpy()
+        # ensemble.forward() already returns softmax probabilities — no second softmax
+        probabilities = ensemble_model(input_resnet, input_vit)[
+            0].cpu().numpy()
 
     predictions = {
         class_name: float(prob)

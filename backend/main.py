@@ -1,10 +1,19 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 from inference import predict_xray
 
-app = FastAPI(title="Chest X-Ray Disease Classification")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+    yield
+    # shutdown (add cleanup here if needed)
+
+
+app = FastAPI(title="Chest X-Ray Disease Classification", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,8 +24,9 @@ app.add_middleware(
 )
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png"}
+ALLOWED_TYPES = {"image/jpeg", "image/png"}
 
+# Keys match CLASS_NAMES in inference.py exactly
 CLASS_META = {
     "Normal": {
         "color": "#16A34A",
@@ -26,7 +36,7 @@ CLASS_META = {
         "color": "#D97706",
         "message": "Signs of Pneumonia detected. Medical consultation recommended.",
     },
-    "COVID-19": {
+    "COVID19": {
         "color": "#DC2626",
         "message": "Signs of COVID-19 detected. Immediate medical attention advised.",
     },
@@ -36,57 +46,25 @@ CLASS_META = {
     },
 }
 
-
-@app.on_event("startup")
-def on_startup() -> None:
-    app.state.model_loaded = True
-
-
-def normalize_class_name(name: str) -> str:
-    if not name:
-        return ""
-    cleaned = name.strip()
-    upper = cleaned.upper().replace(" ", "").replace("_", "")
-    if upper in {"COVID19", "COVID-19"}:
-        return "COVID-19"
-    lower = cleaned.lower()
-    if lower == "normal":
-        return "Normal"
-    if lower == "pneumonia":
-        return "Pneumonia"
-    if lower in {"tuberculosis", "tb"}:
-        return "Tuberculosis"
-    return cleaned
-
-
-def normalize_probabilities(probabilities) -> dict:
-    if not isinstance(probabilities, dict):
-        return {}
-    normalized = {}
-    for key, value in probabilities.items():
-        class_name = normalize_class_name(str(key))
-        if not class_name:
-            continue
-        normalized_key = "COVID19" if class_name == "COVID-19" else class_name
-        try:
-            normalized[normalized_key] = float(value)
-        except (TypeError, ValueError):
-            normalized[normalized_key] = 0.0
-
-    for key in ["Normal", "Pneumonia", "COVID19", "Tuberculosis"]:
-        normalized.setdefault(key, 0.0)
-
-    return normalized
+# Display names for the frontend
+DISPLAY_NAMES = {
+    "COVID19": "COVID-19",
+    "Normal": "Normal",
+    "Pneumonia": "Pneumonia",
+    "Tuberculosis": "Tuberculosis",
+}
 
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)) -> dict:
-    if file.content_type not in ALLOWED_CONTENT_TYPES:
+    # ── Validate file type ────────────────────────────────────────────────────
+    if file.content_type not in ALLOWED_TYPES:
         raise HTTPException(
             status_code=400,
             detail="Unsupported file type. Please upload a JPG or PNG image.",
         )
 
+    # ── Read & size-check ─────────────────────────────────────────────────────
     image_bytes = await file.read()
     if len(image_bytes) > MAX_FILE_SIZE:
         raise HTTPException(
@@ -94,72 +72,44 @@ async def predict(file: UploadFile = File(...)) -> dict:
             detail="File too large. Please upload an image under 10MB.",
         )
 
+    # ── Decode image ──────────────────────────────────────────────────────────
     try:
         image = Image.open(BytesIO(image_bytes)).convert("RGB")
     except (UnidentifiedImageError, ValueError):
         raise HTTPException(
-            status_code=422,
-            detail="Corrupted or unreadable image.",
-        )
+            status_code=422, detail="Corrupted or unreadable image.")
     except Exception:
         raise HTTPException(
             status_code=422, detail="Corrupted or unreadable image.")
 
+    # ── Run inference ─────────────────────────────────────────────────────────
     try:
-        prediction = predict_xray(image)
-    except Exception:
-        raise HTTPException(status_code=500, detail="Model inference failed.")
-
-    class_name = None
-    confidence = None
-    probabilities = None
-
-    heatmap_regions = None
-    heatmap_overlay = None
-
-    if isinstance(prediction, dict):
-        class_name = prediction.get(
-            "class") or prediction.get("predicted_class")
-        confidence = prediction.get("confidence")
-        probabilities = prediction.get("probabilities", {})
-        heatmap_regions = prediction.get("heatmap_regions")
-        heatmap_overlay = prediction.get("heatmap_overlay")
-    elif isinstance(prediction, (list, tuple)) and len(prediction) >= 3:
-        class_name, confidence, probabilities = prediction[0], prediction[1], prediction[2]
-    else:
+        result = predict_xray(image)
+    except Exception as e:
         raise HTTPException(
-            status_code=500, detail="Unexpected model response format.")
+            status_code=500, detail=f"Model inference failed: {str(e)}")
 
-    if class_name is None:
-        raise HTTPException(
-            status_code=500, detail="Unexpected model response format.")
+    # ── Extract results ───────────────────────────────────────────────────────
+    top_class = result["class"]          # e.g. "COVID19"
+    confidence = float(result["confidence"])
+    # already clean dict from inference.py
+    probabilities = result["probabilities"]
+    heatmap_regions = result.get("heatmap_regions")
+    heatmap_overlay = result.get("heatmap_overlay")
 
-    class_name = normalize_class_name(str(class_name))
-    if not class_name:
-        raise HTTPException(
-            status_code=500, detail="Unexpected model response format.")
-    class_key = "COVID19" if class_name == "COVID-19" else class_name
-    prob_map = normalize_probabilities(probabilities)
-
-    try:
-        confidence_value = float(confidence)
-    except (TypeError, ValueError):
-        confidence_value = float(prob_map.get(class_key, 0.0))
-
-    if class_key in prob_map:
-        prob_map[class_key] = max(prob_map[class_key], confidence_value)
-
-    meta = CLASS_META.get(class_name)
-    if not meta:
-        meta = {
-            "color": "#2563EB",
-            "message": "Prediction completed. Consult a medical professional for diagnosis.",
-        }
+    meta = CLASS_META.get(top_class, {
+        "color": "#2563EB",
+        "message": "Prediction completed. Consult a medical professional for diagnosis.",
+    })
 
     return {
-        "predicted_class": class_name,
-        "confidence": round(confidence_value, 4),
-        "probabilities": prob_map,
+        # "COVID-19" for frontend
+        "predicted_class": DISPLAY_NAMES.get(top_class, top_class),
+        "confidence": round(confidence, 4),
+        "probabilities": {
+            DISPLAY_NAMES.get(k, k): round(v, 4)
+            for k, v in probabilities.items()
+        },
         "color": meta["color"],
         "message": meta["message"],
         "heatmap_regions": heatmap_regions,
