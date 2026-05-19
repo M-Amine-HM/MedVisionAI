@@ -1,0 +1,11 @@
+\begin{abstract}
+This report presents \textbf{PneumoScan}, an end-to-end artificial intelligence system designed to classify chest radiograph (X-ray) images into four clinically significant diagnostic categories: \textit{Normal}, \textit{Pneumonia}, \textit{COVID-19}, and \textit{Tuberculosis}. The system integrates two state-of-the-art deep learning architectures --- a fine-tuned \textbf{ResNet-18} convolutional neural network and a \textbf{Vision Transformer (ViT-Small)} --- into an ensemble framework, and exposes the resulting model through a full-stack web application intended for clinical and educational use.
+
+The AI pipeline was trained on a consolidated dataset drawn from three publicly available sources, encompassing thousands of chest radiograph images. Rigorous data preprocessing, class balancing via weighted random sampling, and extensive augmentation strategies were applied prior to training. The ResNet-18 model, equipped with a custom classification head and label-smoothing cross-entropy loss, achieved a test accuracy of \textbf{97.15\%}. The ViT-Small model, trained on a fourfold augmented dataset with a cosine warm-up learning rate schedule, achieved \textbf{96.63\%}. An optimised weighted ensemble of both models attained a final test accuracy of \textbf{97.50\%}, demonstrating the complementary nature of convolutional and attention-based representations.
+
+The web application is implemented using \textbf{Angular} (frontend) and \textbf{FastAPI} (backend, Python), communicating via REST API endpoints. Users may upload a chest X-ray image and receive a probabilistic classification, disease information, and general clinical guidance. The system demonstrates that reliable, high-accuracy pulmonary disease screening tools can be developed and deployed using open-source frameworks, contributing to the democratisation of AI-assisted medical diagnosis.
+\end{abstract}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Keywords:} Deep Learning, Convolutional Neural Networks, Vision Transformer, Transfer Learning, Ensemble Learning, Medical Image Classification, Pulmonary Disease, Chest X-Ray, Healthcare Web Application, FastAPI, Angular.
