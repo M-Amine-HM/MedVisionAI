@@ -126,7 +126,7 @@ const ResultCard = ({
                                 Suspicious Areas Visualization
                             </div>
                             <div className="text-xs text-medical-muted">
-                                Grad-CAM heatmap from the ResNet model
+                                Ensemble Grad-CAM heatmap
                             </div>
                         </div>
                         <div className="flex rounded-full border border-medical-border bg-white p-1 text-xs">

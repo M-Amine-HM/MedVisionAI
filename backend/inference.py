@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import io
 import json
+import math
 from pathlib import Path
 from typing import Dict
 
@@ -111,7 +112,7 @@ def _load_models():
 resnet_model, vit_model, ensemble_model = _load_models()
 
 
-def _generate_gradcam_map(pil_image: Image.Image) -> np.ndarray:
+def _generate_resnet_gradcam(pil_image: Image.Image, class_idx: int) -> np.ndarray:
     resnet_model.zero_grad(set_to_none=True)
     activations = []
     gradients = []
@@ -129,14 +130,13 @@ def _generate_gradcam_map(pil_image: Image.Image) -> np.ndarray:
 
     input_resnet = transform_resnet(pil_image).unsqueeze(0).to(DEVICE)
     scores = resnet_model(input_resnet)
-    class_idx = int(torch.argmax(scores, dim=1).item())
     scores[0, class_idx].backward()
 
     handle_forward.remove()
     handle_backward.remove()
 
     if not activations or not gradients:
-        raise RuntimeError("Grad-CAM failed to capture activations.")
+        raise RuntimeError("ResNet Grad-CAM failed to capture activations.")
 
     grads = gradients[0]
     acts = activations[0]
@@ -156,6 +156,65 @@ def _generate_gradcam_map(pil_image: Image.Image) -> np.ndarray:
     cam_np -= cam_np.min()
     cam_np /= (cam_np.max() + 1e-8)
     return cam_np
+
+
+def _generate_vit_gradcam(pil_image: Image.Image, class_idx: int) -> np.ndarray:
+    vit_model.zero_grad(set_to_none=True)
+    activations = []
+    gradients = []
+
+    target_block = vit_model.blocks[-1]
+
+    def _forward_hook(_, __, output):
+        activations.append(output)
+
+    def _backward_hook(_, __, grad_output):
+        gradients.append(grad_output[0])
+
+    handle_forward = target_block.register_forward_hook(_forward_hook)
+    handle_backward = target_block.register_full_backward_hook(_backward_hook)
+
+    input_vit = transform_vit(pil_image).unsqueeze(0).to(DEVICE)
+    scores = vit_model(input_vit)
+    scores[0, class_idx].backward()
+
+    handle_forward.remove()
+    handle_backward.remove()
+
+    if not activations or not gradients:
+        raise RuntimeError("ViT Grad-CAM failed to capture activations.")
+
+    tokens = activations[0]
+    grads = gradients[0]
+    token_grads = grads[:, 1:, :]
+    token_acts = tokens[:, 1:, :]
+    weights = torch.mean(token_grads, dim=2, keepdim=True)
+    cam_tokens = torch.sum(weights * token_acts, dim=2)
+    cam_tokens = torch.relu(cam_tokens)
+
+    num_patches = cam_tokens.shape[1]
+    grid_size = int(math.sqrt(num_patches))
+    cam_map = cam_tokens.reshape(1, 1, grid_size, grid_size)
+    cam_map = F.interpolate(
+        cam_map,
+        size=(pil_image.height, pil_image.width),
+        mode="bilinear",
+        align_corners=False,
+    )
+    cam_np = cam_map.squeeze(0).squeeze(0).detach().cpu().numpy()
+    cam_np -= cam_np.min()
+    cam_np /= (cam_np.max() + 1e-8)
+    return cam_np
+
+
+def _generate_ensemble_cam(pil_image: Image.Image, class_idx: int) -> np.ndarray:
+    weights = ensemble_model.weights.detach().cpu().numpy()
+    resnet_cam = _generate_resnet_gradcam(pil_image, class_idx)
+    vit_cam = _generate_vit_gradcam(pil_image, class_idx)
+    cam = (weights[0] * resnet_cam) + (weights[1] * vit_cam)
+    cam -= cam.min()
+    cam /= (cam.max() + 1e-8)
+    return cam
 
 
 def _extract_points(
@@ -240,7 +299,7 @@ def predict_xray(image) -> dict:
     top_class = max(predictions, key=predictions.get)
     confidence = predictions[top_class]
 
-    cam_map = _generate_gradcam_map(pil_image)
+    cam_map = _generate_ensemble_cam(pil_image, CLASS_NAMES.index(top_class))
     heatmap_regions = _extract_points(cam_map, pil_image.size)
     heatmap_overlay = _generate_heatmap_overlay(cam_map)
 
