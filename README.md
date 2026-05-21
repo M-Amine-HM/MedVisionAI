@@ -5,11 +5,11 @@
 <!-- ![Screenshot Placeholder](docs/screenshot-placeholder.svg) -->
 
 ## Overview
-ChestAI is a clinical-grade web application that wraps a deep learning ensemble model to classify chest X-ray images into four respiratory conditions. Users upload a JPG/PNG image, the FastAPI backend runs inference, and the React frontend presents a clear, trustworthy medical UI with confidence breakdowns.
+MedVisionAI is a clinical-grade web application that uses a ResNet-18 + ViT-Small ensemble to classify chest X-ray images into four respiratory conditions. Users upload a JPG/PNG image, the FastAPI backend runs inference, generates an ensemble Grad-CAM heatmap, and produces an optional RAG-based clinical report. The React frontend presents a clear, trustworthy medical UI with confidence breakdowns.
 
 ## Tech Stack
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?logo=tensorflow&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-38B2AC?logo=tailwindcss&logoColor=white)
@@ -19,6 +19,11 @@ ChestAI is a clinical-grade web application that wraps a deep learning ensemble 
 - **Pneumonia** — Bacterial or viral lung infection causing inflammation.
 - **COVID-19** — Viral infection causing ground-glass opacity patterns.
 - **Tuberculosis** — Bacterial infection with upper lobe infiltrates.
+
+## Key Features
+- Weighted ensemble of ResNet-18 and ViT-Small classifiers.
+- Ensemble Grad-CAM heatmap for explainability.
+- RAG-based clinical report generation (Groq + LLaMA-3.3-70B).
 
 ## How to Run (Backend)
 ```bash
