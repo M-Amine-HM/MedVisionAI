@@ -1,0 +1,74 @@
+Community-Acquired Pneumonia (CAP)
+Overview:
+Pneumonia is an acute infection of the pulmonary parenchyma causing inflammation and fluid/pus
+accumulation in the alveoli. It can be bacterial, viral, fungal, or atypical in origin.
+
+Common Causative Organisms:
+Bacterial (most common):
+- Streptococcus pneumoniae (most common bacterial cause, ~30%)
+- Haemophilus influenzae
+- Staphylococcus aureus (including MRSA)
+- Klebsiella pneumoniae (lobar pneumonia, especially alcoholics)
+Atypical:
+- Mycoplasma pneumoniae (walking pneumonia, younger patients)
+- Legionella pneumophila (Legionnaire's disease)
+- Chlamydophila pneumoniae
+Viral:
+- Influenza A/B
+- Respiratory syncytial virus (RSV)
+- SARS-CoV-2
+
+Radiological Findings:
+- Lobar/segmental consolidation (air space opacification) — classic bacterial
+- Interstitial pattern — atypical, viral
+- Air bronchograms within consolidation
+- Pleural effusion in severe cases
+- Cavitation (Klebsiella, Staphylococcus, anaerobes)
+
+Symptoms:
+- Acute onset fever (>38.5°C), rigors
+- Productive cough with purulent/rusty sputum
+- Pleuritic chest pain (sharp, worsens with breathing)
+- Dyspnea and tachypnea
+- Fatigue, malaise, myalgia
+- Confusion in elderly (atypical presentation)
+
+Severity Scoring — CURB-65:
+Score 1 point each: Confusion, Urea >7mmol/L, RR ≥30/min, BP (systolic <90 or diastolic ≤60), Age ≥65
+- 0-1: Low severity → outpatient
+- 2: Moderate → hospital admission
+- 3-5: High severity → ICU consideration
+
+Treatment:
+Outpatient (CURB-65 0-1):
+- Amoxicillin 500mg-1g PO TID × 5-7 days (first-line, non-penicillin-allergic)
+- Azithromycin 500mg day 1, 250mg days 2-5 (atypical coverage or penicillin allergy)
+- Doxycycline 100mg PO BID × 5 days (alternative)
+
+Inpatient, Non-ICU (CURB-65 2-3):
+- Beta-lactam (amoxicillin-clavulanate or ceftriaxone 1-2g IV) + macrolide
+- OR respiratory fluoroquinolone (levofloxacin 750mg, moxifloxacin 400mg)
+
+ICU / Severe (CURB-65 4-5):
+- Beta-lactam + azithromycin OR beta-lactam + fluoroquinolone
+- Add anti-MRSA coverage (vancomycin, linezolid) if MRSA risk factors
+- Supportive: oxygen, IV fluids, vasopressors if septic shock
+
+Supportive Care:
+- Antipyretics (paracetamol, ibuprofen)
+- Adequate hydration (oral or IV)
+- Incentive spirometry
+- DVT prophylaxis (hospitalized patients)
+- Smoking cessation counseling
+
+Monitoring:
+- SpO2 monitoring (target ≥ 94%)
+- Serial blood cultures before antibiotics (ICU patients)
+- CRP, procalcitonin for antibiotic stewardship
+- Follow-up chest X-ray in 6 weeks to confirm resolution (rule out malignancy)
+
+Prevention:
+- Pneumococcal vaccine (PCV20 or PPSV23) — all adults ≥65, immunocompromised
+- Annual influenza vaccine
+- Smoking cessation
+- Good hand hygiene

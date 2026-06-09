@@ -1,0 +1,52 @@
+Normal Chest X-Ray — Reference Guide
+
+A normal chest X-ray serves as an important baseline for comparison and indicates no significant
+pulmonary pathology is present.
+
+Normal Radiological Anatomy:
+Lungs:
+- Clear lung fields bilaterally, no opacification
+- Normal vascular markings visible from hilum to periphery
+- Costophrenic angles sharp (no effusion)
+- Lung apices clear
+
+Heart:
+- Cardiothoracic ratio < 0.5 on PA view
+- Clear cardiac borders (left: aortic knuckle, pulmonary artery, left ventricle)
+- Right heart border: SVC, right atrium
+
+Mediastinum:
+- Upper mediastinum: trachea midline
+- Hila at normal position (left hilum slightly higher than right)
+- No hilar lymphadenopathy
+
+Diaphragm:
+- Right hemidiaphragm slightly higher than left (liver)
+- Gastric air bubble beneath left hemidiaphragm
+- Clear costo- and cardiophrenic angles
+
+Bones and Soft Tissues:
+- Symmetric ribs, no fractures or lytic lesions
+- Vertebral bodies visible, no obvious collapse
+- Soft tissues symmetric
+
+What Normal Findings Mean for the Patient:
+- No active pulmonary infection detected
+- No evidence of cardiac enlargement
+- No pleural effusion or pneumothorax
+- No suspicious masses or nodules
+
+Clinical Implications:
+A normal chest X-ray in the context of respiratory symptoms should prompt consideration of:
+- Upper respiratory tract infection (not visible on X-ray)
+- Asthma or COPD (may appear normal between exacerbations)
+- Pulmonary embolism (X-ray insensitive — requires CT-PA)
+- Early interstitial lung disease (may require HRCT)
+- Extrapulmonary causes of dyspnea (cardiac, anemia, anxiety)
+
+Recommendations:
+- Routine annual health screening as appropriate for age/risk
+- Maintain updated vaccination status (influenza, pneumococcal)
+- Lifestyle modifications: smoking cessation, exercise, healthy diet
+- Return if symptoms develop or worsen
+- Consider CT for high-risk individuals (smokers >30 pack-years, age 50-80 → low-dose CT screening)

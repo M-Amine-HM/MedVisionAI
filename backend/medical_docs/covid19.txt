@@ -1,0 +1,62 @@
+COVID-19 (Coronavirus Disease 2019)
+Overview:
+COVID-19 is caused by SARS-CoV-2, a novel coronavirus first identified in Wuhan, China in December 2019.
+It primarily spreads through respiratory droplets and aerosols from infected individuals.
+
+Radiological Findings:
+Bilateral ground-glass opacities (GGOs) with peripheral and lower-lobe predominance are the hallmark
+CT finding. Crazy-paving pattern and consolidation develop in moderate-to-severe disease. Chest X-ray
+may appear normal in early or mild cases but shows bilateral infiltrates in moderate disease.
+
+Symptoms:
+- Fever and chills (80% of cases)
+- Dry cough (60-70%)
+- Fatigue and malaise
+- Loss of smell (anosmia) and taste (ageusia) — highly specific
+- Shortness of breath and dyspnea in moderate-severe disease
+- Headache, myalgia, sore throat
+- Gastrointestinal symptoms (diarrhea, nausea) in ~20%
+
+Severity Classification:
+- Mild: Symptoms without hypoxia. SpO2 ≥ 95%.
+- Moderate: Clinical or radiological pneumonia. SpO2 90-94%.
+- Severe: SpO2 < 90%, respiratory rate > 30/min, or >50% lung involvement.
+- Critical: ARDS, septic shock, multi-organ failure.
+
+Treatment Protocols:
+Mild Disease (outpatient):
+- Supportive care: rest, hydration, antipyretics (paracetamol)
+- Nirmatrelvir/ritonavir (Paxlovid) within 5 days of symptom onset for high-risk patients
+- Isolation for minimum 5 days
+
+Moderate Disease (hospitalized):
+- Supplemental oxygen to maintain SpO2 ≥ 94%
+- Remdesivir (200 mg IV loading, 100 mg daily for 5 days)
+- Dexamethasone 6 mg/day for patients requiring oxygen
+
+Severe/Critical Disease (ICU):
+- High-flow nasal oxygen or mechanical ventilation
+- Dexamethasone 6 mg IV daily for 10 days
+- Tocilizumab (IL-6 inhibitor) for hyperinflammatory state
+- Prone positioning for ARDS
+- Anticoagulation (enoxaparin) for VTE prophylaxis
+
+Prevention:
+- mRNA vaccines (Pfizer-BioNTech, Moderna): >90% efficacy against severe disease
+- Adenoviral vector vaccines (AstraZeneca, J&J)
+- N95/FFP2 masks, hand hygiene, ventilation
+- Avoid crowded indoor spaces
+
+Complications:
+Long COVID: Persistent symptoms (fatigue, brain fog, dyspnea) > 12 weeks post-infection
+Thromboembolic events: PE, DVT, stroke
+Myocarditis, pericarditis (rare, more common post-vaccination in young males)
+Secondary bacterial or fungal infections (aspergillosis)
+
+Next Steps for Patients:
+1. Confirm diagnosis with RT-PCR or rapid antigen test
+2. Isolate immediately from household contacts
+3. Monitor SpO2 with pulse oximeter
+4. Seek emergency care if SpO2 < 94%, severe dyspnea, confusion
+5. Notify public health authorities (notifiable disease)
+6. Contact trace and inform close contacts

@@ -1,0 +1,85 @@
+Pulmonary Tuberculosis (TB)
+Overview:
+Tuberculosis is caused by Mycobacterium tuberculosis, an acid-fast bacillus. It is transmitted via
+airborne droplet nuclei and remains a leading infectious disease cause of death worldwide.
+TB is a NOTIFIABLE DISEASE in most countries — mandatory reporting to public health is required.
+
+Primary vs. Reactivation TB:
+Primary TB: Initial infection; often hilar lymphadenopathy, middle/lower lobe infiltrates
+Reactivation TB: From latent infection; classic upper lobe cavitary disease
+
+Radiological Findings (Chest X-ray):
+- Upper lobe infiltrates (posterior segments) — most characteristic
+- Cavitation (thick-walled) — pathognomonic in the right clinical context
+- Fibrotic scarring, calcified granulomas (old/healed TB)
+- Miliary pattern (1-2mm nodules) — disseminated/miliary TB
+- Hilar/mediastinal lymphadenopathy (primary TB)
+- Pleural effusion (exudative, lymphocyte-predominant)
+
+Symptoms (often insidious onset):
+Constitutional (classic triad):
+- Chronic productive cough > 2-3 weeks
+- Night sweats (drenching)
+- Unexplained weight loss (>10% body weight)
+Pulmonary:
+- Low-grade fever (afternoon pyrexia)
+- Haemoptysis (blood-streaked sputum or frank bleeding)
+- Fatigue and anorexia
+- Pleuritic chest pain
+
+Extrapulmonary TB (15-20% of cases):
+- Lymphadenitis (most common extrapulmonary site)
+- Pleural TB (exudative effusion)
+- Bone/joint TB (Pott's disease — vertebral)
+- CNS TB (tuberculous meningitis)
+- Genitourinary TB (sterile pyuria, hematuria)
+
+Diagnostic Workup:
+1. Sputum AFB smear microscopy (rapid, cheap, low sensitivity)
+2. Sputum culture on Lowenstein-Jensen or MGIT (gold standard, 2-8 weeks)
+3. GeneXpert MTB/RIF (molecular, 2 hours, detects rifampicin resistance)
+4. IGRA (QuantiFERON-TB Gold) or tuberculin skin test (TST/Mantoux) for LTBI
+5. Chest X-ray (highly suggestive but not diagnostic alone)
+6. Bronchoscopy + BAL if sputum-scarce
+
+Standard First-Line Treatment (Drug-Sensitive TB):
+Intensive Phase — 2 months (RIPE regimen):
+- Rifampicin (R): 10 mg/kg/day (max 600mg) — bactericidal, prevents resistance
+- Isoniazid (I): 5 mg/kg/day (max 300mg) — most potent bactericidal
+- Pyrazinamide (P): 25-30 mg/kg/day — kills dormant bacilli
+- Ethambutol (E): 15-20 mg/kg/day — prevents resistance
+
+Continuation Phase — 4 months (RI):
+- Rifampicin + Isoniazid only
+- Total duration: 6 months (9 months for CNS, bone TB)
+
+Drug-Resistant TB:
+MDR-TB (resistant to R + I): Bedaquiline-based regimens (6+ months)
+XDR-TB (MDR + fluoroquinolone resistance): Specialist center required
+
+Side Effects to Monitor:
+- Isoniazid: Peripheral neuropathy (supplement B6/pyridoxine), hepatotoxicity
+- Rifampicin: Hepatotoxicity, orange discoloration of secretions, drug interactions (CYP450 inducer)
+- Pyrazinamide: Hepatotoxicity, hyperuricemia/gout
+- Ethambutol: Optic neuritis (monitor visual acuity monthly)
+- LFTs monthly for all patients
+
+Directly Observed Therapy (DOT):
+Recommended for all TB patients to ensure adherence and prevent resistance.
+
+Infection Control:
+- Respiratory isolation (negative pressure room if available)
+- N95 masks for healthcare workers
+- Patient: surgical mask when leaving isolation
+- Three consecutive negative sputum smears required before de-isolation
+
+Public Health Obligations:
+1. Report to local/national health authority immediately
+2. Contact investigation: household contacts and close contacts ≥ 8 hours
+3. IGRA/TST for contacts; treat LTBI if positive
+4. Social support: housing, nutrition, adherence support
+
+Latent TB Infection (LTBI) Treatment:
+- Isoniazid 300mg daily × 9 months
+- Rifampicin daily × 4 months (preferred — shorter, less hepatotoxic)
+- Isoniazid + Rifapentine weekly × 3 months (3HP regimen)
