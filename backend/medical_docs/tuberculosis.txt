@@ -75,7 +75,7 @@ Infection Control:
 
 Public Health Obligations:
 1. Report to local/national health authority immediately
-2. Contact investigation: household contacts and close contacts ≥ 8 hours
+2. Contact investigation: household contacts and close contacts >= 8 hours
 3. IGRA/TST for contacts; treat LTBI if positive
 4. Social support: housing, nutrition, adherence support
 

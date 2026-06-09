@@ -4,6 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 from inference import predict_xray
+from rag import generate_medical_report, vector_store
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @asynccontextmanager
@@ -90,12 +94,23 @@ async def predict(file: UploadFile = File(...)) -> dict:
             status_code=500, detail=f"Model inference failed: {str(e)}")
 
     # ── Extract results ───────────────────────────────────────────────────────
-    top_class = result["class"]          # e.g. "COVID19"
+    top_class = result["class"]
     confidence = float(result["confidence"])
-    # already clean dict from inference.py
     probabilities = result["probabilities"]
     heatmap_regions = result.get("heatmap_regions")
     heatmap_overlay = result.get("heatmap_overlay")
+
+    # ── Generate RAG Report ───────────────────────────────────────────────────
+    try:
+        report = generate_medical_report(
+            predicted_class=top_class,
+            confidence=confidence,
+            probabilities=probabilities,
+            vector_store=vector_store
+        )
+    except Exception as e:
+        # Don't fail the whole request if RAG fails, just return the prediction
+        report = f"Report generation failed: {str(e)}"
 
     meta = CLASS_META.get(top_class, {
         "color": "#2563EB",
@@ -103,7 +118,6 @@ async def predict(file: UploadFile = File(...)) -> dict:
     })
 
     return {
-        # "COVID-19" for frontend
         "predicted_class": DISPLAY_NAMES.get(top_class, top_class),
         "confidence": round(confidence, 4),
         "probabilities": {
@@ -114,6 +128,7 @@ async def predict(file: UploadFile = File(...)) -> dict:
         "message": meta["message"],
         "heatmap_regions": heatmap_regions,
         "heatmap_overlay": heatmap_overlay,
+        "rag_report": report,
     }
 
 

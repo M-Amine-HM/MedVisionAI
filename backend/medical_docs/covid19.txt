@@ -18,7 +18,7 @@ Symptoms:
 - Gastrointestinal symptoms (diarrhea, nausea) in ~20%
 
 Severity Classification:
-- Mild: Symptoms without hypoxia. SpO2 ≥ 95%.
+- Mild: Symptoms without hypoxia. SpO2 >= 95%.
 - Moderate: Clinical or radiological pneumonia. SpO2 90-94%.
 - Severe: SpO2 < 90%, respiratory rate > 30/min, or >50% lung involvement.
 - Critical: ARDS, septic shock, multi-organ failure.
@@ -30,7 +30,7 @@ Mild Disease (outpatient):
 - Isolation for minimum 5 days
 
 Moderate Disease (hospitalized):
-- Supplemental oxygen to maintain SpO2 ≥ 94%
+- Supplemental oxygen to maintain SpO2 >= 94%
 - Remdesivir (200 mg IV loading, 100 mg daily for 5 days)
 - Dexamethasone 6 mg/day for patients requiring oxygen
 

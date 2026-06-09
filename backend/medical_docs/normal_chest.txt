@@ -49,4 +49,4 @@ Recommendations:
 - Maintain updated vaccination status (influenza, pneumococcal)
 - Lifestyle modifications: smoking cessation, exercise, healthy diet
 - Return if symptoms develop or worsen
-- Consider CT for high-risk individuals (smokers >30 pack-years, age 50-80 → low-dose CT screening)
+- Consider CT for high-risk individuals (smokers >30 pack-years, age 50-80 -> low-dose CT screening)

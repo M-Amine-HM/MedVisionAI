@@ -62,6 +62,61 @@ const combineImages = async (baseUrl, overlayUrl) => {
 
 const formatPercent = (value) => `${(value * 100).toFixed(1)}%`;
 
+const RagReport = ({ report }) => {
+    if (!report) return null;
+
+    // Handle fallback raw string (if backend returns string instead of object)
+    if (typeof report === "string") {
+        return (
+            <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4">
+                <div className="font-semibold text-medical-text mb-2">AI Generated Report</div>
+                <p className="text-sm text-medical-muted">{report}</p>
+            </div>
+        );
+    }
+
+    const sections = [
+        { key: "introduction", label: "Introduction", icon: "🔍" },
+        { key: "radiological_findings", label: "Radiological Findings", icon: "🫁" },
+        { key: "symptoms", label: "Symptoms", icon: "🩺" },
+        { key: "severity", label: "Severity Classification", icon: "⚠️" },
+        { key: "differential", label: "Differential Diagnosis", icon: "📊" },
+        { key: "next_steps", label: "Recommended Next Steps", icon: "📋" },
+        { key: "treatment_summary", label: "Treatment Summary", icon: "💊" },
+    ];
+
+    return (
+        <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4">
+            <div className="font-semibold text-medical-text mb-4 text-base">
+                🤖 AI Generated Report
+            </div>
+            <div className="flex flex-col gap-3">
+                {sections.map(({ key, label, icon }) =>
+                    report[key] ? (
+                        <div
+                            key={key}
+                            className="rounded-lg border border-medical-border bg-white p-3"
+                        >
+                            <div className="text-xs font-semibold text-medical-primary mb-1">
+                                {icon} {label}
+                            </div>
+                            <p className="text-sm text-medical-text leading-relaxed">
+                                {report[key]}
+                            </p>
+                        </div>
+                    ) : null
+                )}
+                {report.disclaimer && (
+                    <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+                        <p className="text-xs text-yellow-700 italic">
+                            ⚠️ {report.disclaimer}
+                        </p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
 const ReportSection = ({
     result,
     previewUrl,
@@ -159,6 +214,40 @@ const ReportSection = ({
             }
 
             y += imageHeight + 40;
+
+            if (result.rag_report) {
+                const report = typeof result.rag_report === "string"
+                    ? { introduction: result.rag_report }
+                    : result.rag_report;
+
+                const sections = [
+                    { key: "introduction", label: "Introduction" },
+                    { key: "radiological_findings", label: "Radiological Findings" },
+                    { key: "symptoms", label: "Symptoms" },
+                    { key: "severity", label: "Severity" },
+                    { key: "differential", label: "Differential Diagnosis" },
+                    { key: "next_steps", label: "Next Steps" },
+                    { key: "treatment_summary", label: "Treatment Summary" },
+                    { key: "disclaimer", label: "Disclaimer" },
+                ];
+
+                for (const { key, label } of sections) {
+                    if (!report[key]) continue;
+                    if (y > 750) { doc.addPage(); y = 40; }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(11);
+                    doc.text(label, margin, y);
+                    y += 14;
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    const lines = doc.splitTextToSize(report[key], pageWidth - margin * 2);
+                    doc.text(lines, margin, y);
+                    y += lines.length * 12 + 8;
+                }
+            }
+
             doc.setFont("helvetica", "normal");
             doc.setFontSize(10);
             doc.text(
@@ -238,6 +327,7 @@ const ReportSection = ({
                     </div>
                 </div>
             </div>
+            <RagReport report={result?.rag_report} />
 
             <div className="mt-6 rounded-xl border border-medical-border bg-slate-50 p-4 text-sm text-medical-muted">
                 <div className="font-semibold text-medical-text">Report Summary</div>

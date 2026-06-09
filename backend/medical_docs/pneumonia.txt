@@ -34,10 +34,10 @@ Symptoms:
 - Confusion in elderly (atypical presentation)
 
 Severity Scoring — CURB-65:
-Score 1 point each: Confusion, Urea >7mmol/L, RR ≥30/min, BP (systolic <90 or diastolic ≤60), Age ≥65
-- 0-1: Low severity → outpatient
-- 2: Moderate → hospital admission
-- 3-5: High severity → ICU consideration
+Score 1 point each: Confusion, Urea >7mmol/L, RR >=30/min, BP (systolic <90 or diastolic <=60), Age >=65
+- 0-1: Low severity -> outpatient
+- 2: Moderate -> hospital admission
+- 3-5: High severity -> ICU consideration
 
 Treatment:
 Outpatient (CURB-65 0-1):
@@ -62,13 +62,13 @@ Supportive Care:
 - Smoking cessation counseling
 
 Monitoring:
-- SpO2 monitoring (target ≥ 94%)
+- SpO2 monitoring (target >= 94%)
 - Serial blood cultures before antibiotics (ICU patients)
 - CRP, procalcitonin for antibiotic stewardship
 - Follow-up chest X-ray in 6 weeks to confirm resolution (rule out malignancy)
 
 Prevention:
-- Pneumococcal vaccine (PCV20 or PPSV23) — all adults ≥65, immunocompromised
+- Pneumococcal vaccine (PCV20 or PPSV23) — all adults >=65, immunocompromised
 - Annual influenza vaccine
 - Smoking cessation
 - Good hand hygiene
