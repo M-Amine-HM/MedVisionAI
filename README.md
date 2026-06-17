@@ -60,15 +60,29 @@ The reported model results are based on a held-out test set with 491 images acro
 | Tuberculosis | 1.0000 | 1.0000 | 1.0000 | 105 |
 
 ## Screenshots / Demo
-<!-- Add a screenshot of the landing page here. -->
-<!-- Add a screenshot of the upload-and-prediction flow here. -->
-<!-- Add a screenshot of the Grad-CAM heatmap and generated report here. -->
-<!-- Add a short demo GIF or screen recording here. -->
+### 1. Interface Overview
+![Screenshot 1](docs/screenshots/screenshot1.png)
+
+![Screenshot 2](docs/screenshots/screenshot2.png)
+
+### 2. Upload X-ray
+![Screenshot 3](docs/screenshots/screenshot3.png)
+
+![Screenshot 4](docs/screenshots/screenshot4.png)
+
+![Screenshot 5](docs/screenshots/screenshot5.png)
+### 3.Predections results and confidence score
+![Screenshot 6](docs/screenshots/screenshot6.png)
+
+![Screenshot 7](docs/screenshots/screenshot7.png)
+
+### 6.Clinical Report Output
+![Screenshot 8](docs/screenshots/screenshot8.png)
 
 ## Installation & usage
 ### 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/M-Amine-HM/MedVisionAI
 cd MedVisionAI
 ```
 
@@ -144,9 +158,9 @@ MedVisionAI/
 ```
 
 ## Authors
-| Name | GitHub | LinkedIn |
-| --- | --- | --- |
-| Your Name | https://github.com/M-Amine-HM | https://www.linkedin.com/in/mohamedaminehm/ |
+ GitHub | LinkedIn |
+ --- | --- |
+ https://github.com/M-Amine-HM | https://www.linkedin.com/in/mohamedaminehm/ |
 
 ## Disclaimer
 This project is for research and educational purposes only and is not a substitute for professional medical diagnosis or treatment.
